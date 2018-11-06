@@ -2,7 +2,7 @@ package semestr1;
 
 public class Backwards {
     public static void main(String[] args) {
-        String text = "Ala ma kota";
+        String text = "Wojtek pisze programy";
 
         int l = text.length()-1;
 
