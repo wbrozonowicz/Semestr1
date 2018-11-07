@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class BubbleSort {
     public static void main(String[] args) {
-        int intToAdd = 0;
+        int intToAdd;
         String line = "";
         ArrayList tab = new ArrayList();
         System.out.println("Instrukcja:");
@@ -16,11 +16,12 @@ public class BubbleSort {
         System.out.println("Wpisz pierwszą liczbę:");
         do {
             if (tab.size() > 0) {
-                System.out.println("Twoja tablica obecnie:");
+                System.out.print("Twoja tablica obecnie: [ ");
                 for (Object a : tab) {
-                    System.out.print(a + "\t");
+                    System.out.print(a+" ");
                 }
-                System.out.println("Podaj kolejną liczbę lub wpisz SORT:");
+                System.out.println("]");
+                System.out.println(" Podaj kolejną liczbę lub wpisz SORT:");
             }
             try {
                 BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
@@ -40,14 +41,16 @@ public class BubbleSort {
         sortMyArray(tab);
     }
 
-    static void sortMyArray(ArrayList array) {
+   private static void sortMyArray(ArrayList array) {
         if (array.size() > 0) {
-            System.out.println("Tablica przed sortowaniem:");
+            System.out.println("Tablica przed sortowaniem: ");
+            System.out.print("[ ");
             for (Object a : array) {
-                System.out.print(a + "\t");
+                System.out.print(a + " ");
             }
-            System.out.println("");
-            System.out.println("Tablica po sortowaniu:");
+            System.out.println("]");
+            System.out.println("Tablica po sortowaniu: ");
+            System.out.print("[ ");
             int temp = 0;
             for (int i = 0; i < array.size(); i++)
                 for (int j = 0; j < array.size() - 1; j++) {
@@ -61,8 +64,9 @@ public class BubbleSort {
                     }
                 }
             for (Object a : array) {
-                System.out.print(a + "\t");
+                System.out.print(a + " ");
             }
+            System.out.println("]");
         } else {
             System.out.println("Nie było nic do posortowania.");
         }
