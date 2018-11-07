@@ -1,32 +1,71 @@
 package semestr1;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.nio.Buffer;
+import java.util.ArrayList;
+
 public class BubbleSort {
     public static void main(String[] args) {
-        int[] inArray = {9, 3, 8, 4, 6, 77}; // array for bubble sort
-        sortMyArray(inArray);
-    }
-
-    static void sortMyArray(int[] array) {
-        System.out.println("Tablica przed sortowaniem:");
-        for (int a : array) {
-            System.out.print(a + "\t");
-        }
-        System.out.println("");
-        System.out.println("Tablica po sortowaniu:");
-        int temp = 0;
-        for (int i = 0; i < array.length; i++)
-            for (int j = 0; j < array.length - 1; j++) {
-
-                if (array[j] > array[j + 1]) {
-                    temp = array[j + 1];
-                    array[j + 1] = array[j];
-                    array[j] = temp;
+        int intToAdd = 0;
+        String line = "";
+        ArrayList tab = new ArrayList();
+        System.out.println("Instrukcja:");
+        System.out.println("Podaj kolejne liczby całkowite tablicy do sortowania, zatwierdzaj ENTER'em.");
+        System.out.println("Wpisz SORT aby zakończyc wpisywanie tablicy i dokonać sortowania metodą Bubble Sort.");
+        System.out.println("Wpisz pierwszą liczbę:");
+        do {
+            if (tab.size() > 0) {
+                System.out.println("Twoja tablica obecnie:");
+                for (Object a : tab) {
+                    System.out.print(a + "\t");
                 }
+                System.out.println("Podaj kolejną liczbę lub wpisz SORT:");
             }
-        for (int a : array) {
-            System.out.print(a + "\t");
+            try {
+                BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+                line = bf.readLine();
+                if (!line.equals("SORT")) {
+                    intToAdd = Integer.parseInt(line);
+                    tab.add(intToAdd);
+                }
+            } catch (Exception e) {
+                System.out.println("Podałeś nieprawidłową wartość. Błąd: " + e.getMessage());
+                System.out.println("Wpisz prawidłową liczbę lub wpisz SORT:");
+            }
         }
+        while (!line.equals("SORT"));
+
+        tab.trimToSize();
+        sortMyArray(tab);
     }
 
+    static void sortMyArray(ArrayList array) {
+        if (array.size() > 0) {
+            System.out.println("Tablica przed sortowaniem:");
+            for (Object a : array) {
+                System.out.print(a + "\t");
+            }
+            System.out.println("");
+            System.out.println("Tablica po sortowaniu:");
+            int temp = 0;
+            for (int i = 0; i < array.size(); i++)
+                for (int j = 0; j < array.size() - 1; j++) {
+                    int a;
+                    int b;
+                    a = (int) array.get(j);
+                    b = (int) array.get(j + 1);
+                    if (a > b) {
+                        array.set(j, b);
+                        array.set(j + 1, a);
+                    }
+                }
+            for (Object a : array) {
+                System.out.print(a + "\t");
+            }
+        } else {
+            System.out.println("Nie było nic do posortowania.");
+        }
 
+    }
 }
