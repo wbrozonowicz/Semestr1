@@ -132,18 +132,19 @@ public class CircleCross extends JFrame implements ActionListener {
                 if ((count>0) && (count<(level*level))) {
                     this.commputerPlay();
                     if (checkWinner(btn, count)) {
-                        count=level*level;
+                        count = level * level;
                         JOptionPane.showMessageDialog(this, "Przegrałeś z komputerem. Żenada!", "Słabiutko :-(", JOptionPane.WARNING_MESSAGE);
                         for (int i = 0; i < btn.length; i++)
                             for (int j = 0; j < btn[0].length; j++)
                                 btn[i][j].setEnabled(false);
-              //          compMoveBtn.setEnabled(false);
+                        //          compMoveBtn.setEnabled(false);
 
+                    } else if (count == (level * level)) {
+                        JOptionPane.showMessageDialog(this, "Mamy remis", "Ojejku", JOptionPane.WARNING_MESSAGE);
+                        for (int i = 0; i < btn.length; i++)
+                            for (int j = 0; j < btn[0].length; j++)
+                                btn[i][j].setEnabled(false);
                     }
-
-
-
-
                 }
             }
         }
@@ -178,6 +179,7 @@ public class CircleCross extends JFrame implements ActionListener {
         int direction;
         boolean horizontalLineOk=false;
         boolean verticalLineOk=false;
+        boolean diagonalLineOk=false;
 
         Random rm = new Random();
         direction = rm.nextInt(2); // wylosuj czy losować z tego samego iwersza czy z kolumny
@@ -193,9 +195,17 @@ public class CircleCross extends JFrame implements ActionListener {
             if (checkIfEmpty(btn[i][lastUserY]))
                 verticalLineOk= true;
         }
+        // czy mozna losowac z przekątnej
+        for (int i = 0; i < btn.length; i++) {
+            if (checkIfEmpty(btn[i][i]))
+                diagonalLineOk= true;
+        }
+
+
+
         // zmien kierunek jesli wylosowany jest niemozliwy
         if ((!horizontalLineOk)&&(!verticalLineOk)){
-            direction=2;
+            direction=3;
         } else if ((horizontalLineOk)&&(verticalLineOk)){
         } else {
             if (horizontalLineOk)
@@ -203,6 +213,14 @@ public class CircleCross extends JFrame implements ActionListener {
             else
                 direction=1;
         }
+
+        if ((lastUserX==lastUserY)&&(diagonalLineOk)) // jeśli jest potrzeba i możliwość to losuj z przekątnej
+            direction=2;
+
+
+        if ((lastUserX==0)&&(lastUserY==(btn.length-1))&&(count==1)) // w drugim ruchu wybieraj przeciwległy narożnik
+            direction = 4;
+
 
         if (direction == 0) { // losuj z tego samego wiersza
             do {
@@ -216,11 +234,21 @@ public class CircleCross extends JFrame implements ActionListener {
                 indexX = rm.nextInt(bounds);
             } while ((!checkIfEmpty(btn[indexX][indexY])));
         }
-        if (direction==2){ //losuj z pozostałych btn
+        if (direction==2) { //losuj z przekątnej
+            do {
+                indexY = rm.nextInt(bounds);
+                indexX = indexY;
+            } while ((!checkIfEmpty(btn[indexX][indexY])));
+        }
+        if (direction==3){ //losuj z pozostałych btn
             do {
                 indexX = rm.nextInt(bounds);
                 indexY = rm.nextInt(bounds);
             } while ((!checkIfEmpty(btn[indexX][indexY])));
+        }
+        if (direction==4){ //wybierz przeciwległy naroznik
+                indexX = (btn.length-1);
+                indexY = 0;
         }
 
         count++;
@@ -248,15 +276,14 @@ public class CircleCross extends JFrame implements ActionListener {
             mySign = "O";
             userSign = "X";
         }
-        // sprawdz czy user ma szanse wygrac
+
+        // sprawdz czy mam szanse wygrac
         for (int i = 0; i < btn.length; i++) {
             for (int j = 0; j < btn.length; j++) {
                 if (checkIfEmpty(btn[i][j])) {
-                    btn[i][j].setText(userSign);
-                    //jesli tak zapobiegnij tej katastrofie :)
+                    btn[i][j].setText(mySign);
+                    //jesli tak to rób tak :)
                     if (checkWinner(btn, count)) {
-                        uNmarkWinner(winnerBtn);
-                        btn[i][j].setText(mySign);
                         if (cross)
                             cross = false;
                         else
@@ -266,13 +293,9 @@ public class CircleCross extends JFrame implements ActionListener {
                         lastY = j;
                         count++;
                         moved = true;
-
-                        if (checkWinner(btn, count)) {
-                            break; // jeśli po tym ruchu wygrywam - wyjdz z pętli
-                        }
                         break;
                     } else {
-                        btn[i][j].setText("?"); // przywróć empty btn w przypadku gdy nie ma ryzyka przegranej
+                        btn[i][j].setText("?"); // przywróć empty btn w przypadku gdy nie ma szansy
                     }
                 }
 
@@ -280,7 +303,44 @@ public class CircleCross extends JFrame implements ActionListener {
             if (moved == true)
                 break;
         }
-        // jeślu user nie ma szancy na wygraną
+
+
+        // sprawdz czy user ma szanse wygrac
+        if (!moved) {
+            for (int i = 0; i < btn.length; i++) {
+                for (int j = 0; j < btn.length; j++) {
+                    if (checkIfEmpty(btn[i][j])) {
+                        btn[i][j].setText(userSign);
+                        //jesli tak zapobiegnij tej katastrofie :)
+                        if (checkWinner(btn, count)) {
+                            uNmarkWinner(winnerBtn);
+                            btn[i][j].setText(mySign);
+                            if (cross)
+                                cross = false;
+                            else
+                                cross = true;
+                            btn[i][j].setEnabled(false);
+                            lastX = i;
+                            lastY = j;
+                            count++;
+                            moved = true;
+
+                            if (checkWinner(btn, count)) {
+                                break; // jeśli po tym ruchu wygrywam - wyjdz z pętli
+                            }
+                            break;
+                        } else {
+                            btn[i][j].setText("?"); // przywróć empty btn w przypadku gdy nie ma ryzyka przegranej
+                        }
+                    }
+
+                }
+                if (moved == true)
+                    break;
+            }
+        }
+
+        // jeślu nikt nie ma szansy na wygraną
         if (!moved) {
             this.firstMove();
         }
